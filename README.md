@@ -1,43 +1,36 @@
-# weather
+# Pleose Weather
 
-Kotlin, Jetpack Compose, MVVM으로 구성한 Pleos Connect Vehicle SDK 기본 예제입니다.
-운전석 1열 왼쪽 문의 지원 범위 확인, 상태 조회, 열기/닫기 요청, 변경 알림 구독을 제공합니다.
+Pleos Connect용 Kotlin · Jetpack Compose 날씨 MVP입니다. 현재 위치 또는 마지막/기본 위치의
+기상청 실황과 향후 6시간 예보를 표시하는 `app / domain / data` 구조입니다.
 
-## 요구 환경
+## 빠른 실행
 
-- Pleos Connect Emulator 2.1.0 이상 (Android API 34 이미지, Cold boot, RAM 4 GB)
-- Android SDK Platform 35
-- JDK 17 이상
+Android SDK 35와 JDK 17 이상이 필요합니다. Git에서 제외되는 `local.properties`에
+기상청 **일반 인증키(Decoding)** 를 추가합니다. 기존 `sdk.dir`는 유지합니다.
+환경변수 `KMA_SERVICE_KEY`가 있으면 우선 사용하며, 키 변경 후 다시 빌드합니다.
 
-## 빌드 및 실행
+```properties
+KMA_SERVICE_KEY=발급받은_Decoding_키
+```
 
 ```bash
-./gradlew assembleDebug
-./gradlew installDebug
+./gradlew :app:assembleDebug
+./gradlew :app:installDebug
+adb shell am start -n com.example.weather/.MainActivity
 ```
 
-Pleos Connect Emulator를 실행한 뒤 Android Studio에서 `app`을 실행해도 됩니다. 일반 Android
-에뮬레이터에는 Pleos Vehicle Service가 없으므로 차량 API를 사용할 수 없습니다.
+키가 없으면 설정 오류를 표시하며 샘플 날씨로 대체하지 않습니다.
+현재 debug APK 빌드·설치·실행과 자동 테스트를 확인했으며, 인증키를 사용한 실제 API 검증은 남아 있습니다.
 
-## Virtual Console
+## 프로젝트 문서
 
-에뮬레이터가 실행 중일 때 다음 명령으로 포트를 전달합니다.
+[문서 목차](docs/README.md)에서 계획, 구현과 검증 상태를 확인할 수 있습니다.
 
-```bash
-adb forward tcp:8088 tcp:8088
-```
-
-브라우저에서 <http://127.0.0.1:8088/>를 열고 `Convenience` 도메인의 운전석 문 위치를
-변경하면, 앱에서 새로고침하거나 변경 알림을 구독해 상태를 확인할 수 있습니다.
-
-## 구조
-
-```text
-MainActivity / VehicleScreen (Compose UI)
-            ↓
-VehicleViewModel (화면 상태와 사용자 동작)
-            ↓
-VehicleRepository / PleosVehicleRepository (Vehicle SDK)
-```
-
-SDK 버전과 저장소는 `gradle/libs.versions.toml`과 `settings.gradle.kts`에서 관리합니다.
+| 문서 | 내용 |
+|---|---|
+| [구현 계획](docs/implementation-plan.md) | 목표·범위, 단계별 상태, 남은 완료 조건 |
+| [프로젝트 구조](docs/architecture.md) | 모듈과 파일별 책임, 데이터·상태 흐름 |
+| [화면과 리소스](docs/ui-guidelines.md) | 반응형 Compose, 주행 제한, drawable XML/PNG 기준 |
+| [개발·실행](docs/development.md) | 환경, 키 설정, 빌드·테스트, debug 주행 전환 |
+| [기상청 API 기준](docs/kma-contract.md) | 발표 시각, 항목·결측·오류 정책 |
+| [검증 기록](docs/verification.md) | 실제 수행 결과와 미검증 항목 |

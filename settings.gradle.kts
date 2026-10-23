@@ -11,9 +11,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://nexus-playground.pleos.ai/repository/maven-releases/")
     }
 }
 
 rootProject.name = "Weather"
-include(":app")
+include(":app", ":domain", ":data")
